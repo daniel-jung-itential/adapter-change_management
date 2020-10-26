@@ -116,7 +116,9 @@ class ServiceNowAdapter extends EventEmitter {
           */
           log.error(`\nError returned from health check from id: ${this.id}:\n${JSON.stringify(error)}`);
           this.emitOffline();
-          callback(null, error);
+          if (callback) {
+              callback(result, error);
+          }
       } else {
         /**
           * Write this block.
@@ -130,7 +132,9 @@ class ServiceNowAdapter extends EventEmitter {
           */
           log.debug(`\nHealth Check successful for id: ${this.id}`);
           this.emitOnline();
-          callback(result);
+          if (callback) {
+              callback(result);
+          }
       }
     });
   }
@@ -188,13 +192,17 @@ class ServiceNowAdapter extends EventEmitter {
      * Note how the object was instantiated in the constructor().
      * get() takes a callback function.
      */
-     this.connector.get((data, error) => {
-      if (error) {
-          console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`)
-          callback(null, error);
-      }
-      console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
-      callback(data);
+      this.connector.get((data, error) => {
+        if (error) {
+            console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`)
+            if (callback) {
+                callback(data, error);
+            }
+        }
+        console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
+        if (callback) {
+            callback(data);
+        }
       });
   }
 
@@ -215,12 +223,16 @@ class ServiceNowAdapter extends EventEmitter {
      * post() takes a callback function.
      */
     this.connector.post({ serviceNowTable: 'change_request' }, (data, error) => {
-    if (error) {
-        console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
-        callback(null, error);
-    }
-    console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
-    callback(data);
+      if (error) {
+          console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
+          if (callback) {
+              callback(data, error);
+          }
+      }
+      console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
+      if (callback) {
+          callback(data);
+      }
     });
   }
 }

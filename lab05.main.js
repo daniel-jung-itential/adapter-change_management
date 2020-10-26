@@ -153,12 +153,16 @@ class ServiceNowAdapter extends EventEmitter {
      * get() takes a callback function.
      */
      this.connector.get((data, error) => {
-      if (error) {
-          console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`)
-          callback(null, error);
-      }
-      console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
-      callback(data);
+        if (error) {
+            console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`)
+            if (callback) {
+                callback(data, error);
+            }
+        }
+        console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
+        if (callback) {
+            callback(data);
+        }
       });
   }
 
@@ -179,12 +183,16 @@ class ServiceNowAdapter extends EventEmitter {
      * post() takes a callback function.
      */
     this.connector.post({ serviceNowTable: 'change_request' }, (data, error) => {
-    if (error) {
-        console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
-        callback(null, error);
-    }
-    console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
-    callback(data);
+      if (error) {
+          console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
+          if (callback) {
+              callback(data, error);
+          }
+      }
+      console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
+      if (callback) {
+          callback(data);
+      }
     });
   }
 }
