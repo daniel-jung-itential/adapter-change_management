@@ -202,8 +202,11 @@ class ServiceNowAdapter extends EventEmitter {
         console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
         if (typeof data === 'object' && 'body' in data) {
             const value = data['body'];
-            if ('result' in value) {
-                const arr = value['result'];
+            console.log(`\nValue:\n${JSON.stringify(value)}`)
+            if ('result' in JSON.parse(value)) {
+              const valueObj = JSON.parse(value);
+                const arr = valueObj['result'];
+                console.log(`\narr:\n${JSON.stringify(arr)}`)
                 const validKeys = ['number', 'active', 'priority', 'description', 'work_start', 'work_end', 'sys_id'];
                 arr.forEach(function(entry) {
                     Object.keys(entry).forEach(function(key) {
@@ -216,6 +219,7 @@ class ServiceNowAdapter extends EventEmitter {
                     Object.defineProperty(entry, 'change_ticket_key', Object.getOwnPropertyDescriptor(entry, 'sys_id'));
                     delete entry['sys_id'];
                 });
+                console.log(`\nAfter revision arr:\n${JSON.stringify(arr)}`)
                 if (callback) {
                     callback(arr);
                 }
@@ -255,7 +259,7 @@ class ServiceNowAdapter extends EventEmitter {
       console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
       if (typeof data === 'object' && 'body' in data) {
             const value = data['body'];
-            if ('result' in value) {
+            if ('result' in JSON.parse(value)) {
                 const obj = value['result'];
                 const validKeys = ['number', 'active', 'priority', 'description', 'work_start', 'work_end', 'sys_id'];
                 Object.keys(obj).forEach(function(key) {
