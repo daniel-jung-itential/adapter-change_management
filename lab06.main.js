@@ -200,31 +200,8 @@ class ServiceNowAdapter extends EventEmitter {
             }
         }
         console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
-        if (typeof data === 'object' && 'body' in data) {
-            const value = data['body'];
-            if ('result' in value) {
-                const arr = value['result'];
-                const validKeys = ['number', 'active', 'priority', 'description', 'work_start', 'work_end', 'sys_id'];
-                arr.forEach(function(entry) {
-                    Object.keys(entry).forEach(function(key) {
-                        if (!validKeys.includes(key)) {
-                            delete entry[key];
-                        }
-                    })
-                    Object.defineProperty(entry, 'change_ticket_number', Object.getOwnPropertyDescriptor(entry, 'number'));
-                    delete entry['number'];
-                    Object.defineProperty(entry, 'change_ticket_key', Object.getOwnPropertyDescriptor(entry, 'sys_id'));
-                    delete entry['sys_id'];
-                });
-                if (callback) {
-                    callback(arr);
-                }
-                return arr;
-            } else {
-                console.error('result not found');
-            }
-        } else {
-            console.error('typeof data not object or body not found');
+        if (callback) {
+            callback(data);
         }
       });
   }
@@ -253,30 +230,9 @@ class ServiceNowAdapter extends EventEmitter {
           }
       }
       console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
-      if (typeof data === 'object' && 'body' in data) {
-            const value = data['body'];
-            if ('result' in value) {
-                const obj = value['result'];
-                const validKeys = ['number', 'active', 'priority', 'description', 'work_start', 'work_end', 'sys_id'];
-                Object.keys(obj).forEach(function(key) {
-                    if (!validKeys.includes(key)) {
-                        delete obj[key];
-                    }
-                })
-                Object.defineProperty(entry, 'change_ticket_number', Object.getOwnPropertyDescriptor(entry, 'number'));
-                delete entry['number'];
-                Object.defineProperty(entry, 'change_ticket_key', Object.getOwnPropertyDescriptor(entry, 'sys_id'));
-                delete entry['sys_id'];
-                if (callback) {
-                    callback(obj);
-                }
-                return obj;
-            } else {
-                console.error('result not found');
-            }
-        } else {
-            console.error('typeof data not object or body not found');
-        }
+      if (callback) {
+          callback(data);
+      }
     });
   }
 }
